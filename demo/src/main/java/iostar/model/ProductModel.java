@@ -14,9 +14,6 @@ public class ProductModel implements Serializable {
     private String name;
     private float price;
     private String description;
-    private int stockQuantity;
-    private String size;
-    private String color;
     private String image;
     private int categoryId;
 }

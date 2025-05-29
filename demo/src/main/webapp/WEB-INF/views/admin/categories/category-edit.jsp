@@ -8,9 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/resources/css/style.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
+        body { background-color: #f8f9fa; }
         .navigation {
             background-color: #343a40;
             padding: 15px;
@@ -24,9 +22,7 @@
         .navigation .logout:hover {
             text-decoration: underline;
         }
-        .navigation .logout {
-            color: #ffc107;
-        }
+        .navigation .logout { color: #ffc107; }
     </style>
 </head>
 <body>
@@ -46,11 +42,12 @@
 <!-- Form Section -->
 <section class="container mt-5">
     <h2 class="fw-bold mb-4">✏️ Chỉnh sửa danh mục</h2>
-    <form method="post" action="/admin/categories/update">
+    <form method="post" action="/admin/categories/update" id="categoryForm">
         <input type="hidden" name="id" value="${category.id}" />
         <div class="mb-3">
             <label class="form-label">Tên danh mục:</label>
-            <input type="text" name="name" class="form-control" value="${category.name}" required />
+            <input type="text" id="name" name="name" class="form-control" value="${category.name}" required />
+            <div id="nameFeedback" class="invalid-feedback"></div>
         </div>
         <div class="d-flex justify-content-between">
             <a href="/admin/categories" class="btn btn-secondary" id="backButton">← Quay lại</a>
@@ -64,13 +61,13 @@
     let formChanged = false;
     const nameInput = document.getElementById("name");
     const feedback = document.getElementById("nameFeedback");
-    const currentName = "${category.name}";
+    const categoryId = "${category.id}";
+    const currentName = "${category.name}".trim().toLowerCase();
 
     nameInput.focus();
 
     nameInput.addEventListener("input", function () {
         formChanged = true;
-
         const value = nameInput.value.trim();
         const isValid = /^[a-zA-ZÀ-ỹ0-9\s]{3,50}$/.test(value);
 
@@ -80,12 +77,13 @@
             return;
         }
 
-        if (value === currentName) {
+        if (value.toLowerCase() === currentName) {
             nameInput.classList.remove("is-invalid");
+            feedback.textContent = "";
             return;
         }
 
-        fetch("/admin/categories/check-name?name=" + encodeURIComponent(value))
+        fetch("/admin/categories/check-name?name=" + encodeURIComponent(value) + "&id=" + categoryId)
             .then(res => res.json())
             .then(data => {
                 if (data.exists) {
@@ -93,6 +91,7 @@
                     feedback.textContent = "Tên danh mục đã tồn tại.";
                 } else {
                     nameInput.classList.remove("is-invalid");
+                    feedback.textContent = "";
                 }
             });
     });
@@ -118,5 +117,6 @@
         }
     });
 </script>
+
 </body>
 </html>

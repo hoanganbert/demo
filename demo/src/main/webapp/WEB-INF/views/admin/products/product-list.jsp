@@ -47,56 +47,119 @@
     <a href="/admin/customers" class="nav-item">👥 Quản lý khách hàng</a>
     <a href="/admin/promotions" class="nav-item">🎁 Quản lý khuyến mãi</a>
     <a href="/admin/reports" class="nav-item">📊 Thống kê & Báo cáo</a>
-    <a href="/admin/logout" class="nav-item logout ms-auto">🔓 Đăng xuất</a>
+    <a href="/logout" class="nav-item logout ms-auto">🔓 Đăng xuất</a>
 </div>
 
 <!-- Main Section -->
 <section class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-bold">📋 Danh sách sản phẩm</h2>
-        <a href="/admin/products/add" class="btn btn-success">+ Thêm sản phẩm</a>
+        <div class="d-flex gap-2">
+            <a href="/admin/products/add" class="btn btn-success">+ Thêm sản phẩm</a>
+            <!-- ✅ MỚI THÊM: Nút toggle hiển thị form xóa theo danh mục -->
+            <button type="button" class="btn btn-outline-danger" onclick="toggleDeleteForm()">🗑 Xóa theo danh mục</button>
+        </div>
     </div>
 
-    <!-- Search Bar -->
-    <form method="GET" action="/admin/products" class="mb-3">
-        <div class="input-group">
-            <input type="text" name="keyword" placeholder="🔍 Tìm kiếm sản phẩm..." class="form-control" value="${param.keyword}">
-            <button type="submit" class="btn btn-outline-secondary">Tìm</button>
+    <!-- Search Form -->
+    <form method="GET" action="/admin/products" class="row g-2 mb-3 align-items-center">
+        <div class="col-auto">
+            <input type="text" name="keyword" placeholder="🔍 Tên sản phẩm..." class="form-control" value="${param.keyword}">
+        </div>
+
+        <div class="col-auto">
+            <select name="categoryId" class="form-select">
+                <option value="">📂 Tất cả danh mục</option>
+                <c:forEach var="category" items="${categories}">
+                    <option value="${category.id}" ${category.id == selectedCategoryId ? 'selected' : ''}>
+                        ${category.name}
+                    </option>
+                </c:forEach>
+            </select>
+        </div>
+
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Tìm</button>
         </div>
     </form>
 
-    <!-- Product Table -->
+    <!-- ✅ MỚI THÊM: Form xóa theo danh mục -->
+    <div id="deleteForm" class="row g-2 mb-3 align-items-center d-none">
+        <form method="POST" action="/admin/products/delete-by-category" class="row g-2">
+            <div class="col-auto">
+                <select name="categoryId" class="form-select" required>
+                    <option value="">📂 Chọn danh mục để xóa</option>
+                    <c:forEach var="category" items="${categories}">
+                        <option value="${category.id}">${category.name}</option>
+                    </c:forEach>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('Bạn chắc chắn muốn xóa tất cả sản phẩm trong danh mục này?')">Xóa</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Product table -->
     <div class="table-responsive">
         <table class="table table-bordered table-hover align-middle text-center">
             <thead class="table-dark">
                 <tr>
                     <th>ID</th>
-                    <th>Tên</th>
+                    <th>Tên sản phẩm</th>
                     <th>Giá</th>
                     <th>Mô tả</th>
                     <th>Tồn kho</th>
                     <th>Size</th>
                     <th>Màu</th>
                     <th>Danh mục</th>
-                    <th>Ảnh</th>
+                    <th>Hình ảnh</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
             <tbody>
-                <c:forEach var="product" items="${products}">
-                    <tr>
-                        <td>${product.id}</td>
+                <tbody>
+    				<c:forEach var="product" items="${products}" varStatus="loop">
+        				<tr>
+            			<td>${loop.index + 1}</td> <!-- STT -->
                         <td>${product.name}</td>
                         <td><fmt:formatNumber value="${product.price}" type="currency" currencySymbol="₫" /></td>
                         <td class="text-start">${product.description}</td>
-                        <td>${product.stockQuantity}</td>
-                        <td>${product.size}</td>
-                        <td>${product.color}</td>
+
+                        <!-- Tồn kho -->
+                        <td class="text-start">
+                            <ul class="list-unstyled mb-0">
+                                <c:forEach var="variant" items="${product.variants}">
+                                    <li>${variant.quantity}</li>
+                                </c:forEach>
+                            </ul>
+                        </td>
+
+                        <!-- Size -->
+                        <td class="text-start">
+                            <ul class="list-unstyled mb-0">
+                                <c:forEach var="variant" items="${product.variants}">
+                                    <li>${variant.size}</li>
+                                </c:forEach>
+                            </ul>
+                        </td>
+
+                        <!-- Màu -->
+                        <td class="text-start">
+                            <ul class="list-unstyled mb-0">
+                                <c:forEach var="variant" items="${product.variants}">
+                                    <li>${variant.color}</li>
+                                </c:forEach>
+                            </ul>
+                        </td>
+
                         <td>${product.category.name}</td>
-                        <td><img src="/images/${product.image}" class="product-img"></td>
+                        <td><img src="/images/${product.image}" class="product-img" style="max-width: 60px;"></td>
                         <td>
                             <a href="/admin/products/edit/${product.id}" class="btn btn-sm btn-primary">Sửa</a>
-                            <a href="/admin/products/delete/${product.id}" class="btn btn-sm btn-danger" onclick="return confirm('Bạn chắc chắn muốn xóa sản phẩm này?')">Xóa</a>
+                            <a href="/admin/products/delete/${product.id}" class="btn btn-sm btn-danger"
+                               onclick="return confirm('Bạn chắc chắn muốn xóa sản phẩm này?')">Xóa</a>
                         </td>
                     </tr>
                 </c:forEach>
@@ -104,43 +167,53 @@
         </table>
     </div>
 
+
     <!-- Pagination -->
-    <div class="d-flex justify-content-between align-items-center mt-3">
-        <!-- Go to Page Form -->
-        <form method="GET" action="/admin/products" class="d-flex">
-            <input type="number" name="page" min="1" max="${page.totalPages}" class="form-control me-2" placeholder="Nhập trang...">
-            <input type="hidden" name="keyword" value="${param.keyword}" />
-            <button type="submit" class="btn btn-primary">Đi đến</button>
-        </form>
+    <c:if test="${page.totalPages > 0}">
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <!-- Go to Page Form -->
+            <form method="GET" action="/admin/products" class="d-flex">
+                <input type="number" name="page" min="1" max="${page.totalPages}" class="form-control me-2" placeholder="Nhập trang...">
+                <input type="hidden" name="keyword" value="${param.keyword}" />
+                <button type="submit" class="btn btn-primary">Đi đến</button>
+            </form>
 
-        <!-- Page Numbers -->
-        <ul class="pagination mb-0">
-            <c:if test="${page.hasPrevious()}">
-                <li class="page-item">
-                    <a class="page-link" href="?page=${page.number - 1}&keyword=${param.keyword}">«</a>
-                </li>
-            </c:if>
-
-            <c:forEach var="i" begin="0" end="${page.totalPages - 1}">
-                <c:if test="${i < 3 || i == page.totalPages - 1 || (i >= page.number - 1 && i <= page.number + 1)}">
-                    <li class="page-item ${i == page.number ? 'active' : ''}">
-                        <a class="page-link" href="?page=${i}&keyword=${param.keyword}">${i + 1}</a>
+            <!-- Page Numbers -->
+            <ul class="pagination mb-0">
+                <c:if test="${page.hasPrevious()}">
+                    <li class="page-item">
+                        <a class="page-link" href="?page=${page.number - 1}&keyword=${param.keyword}">«</a>
                     </li>
                 </c:if>
-                <c:if test="${i == 3 && page.number > 4}">
-                    <li class="page-item disabled"><span class="page-link">...</span></li>
+
+                <c:forEach var="i" begin="0" end="${page.totalPages - 1}">
+                    <c:if test="${i < 3 || i == page.totalPages - 1 || (i >= page.number - 1 && i <= page.number + 1)}">
+                        <li class="page-item ${i == page.number ? 'active' : ''}">
+                            <a class="page-link" href="?page=${i}&keyword=${param.keyword}">${i + 1}</a>
+                        </li>
+                    </c:if>
+                    <c:if test="${i == 3 && page.number > 4}">
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    </c:if>
+                </c:forEach>
+
+                <c:if test="${page.hasNext()}">
+                    <li class="page-item">
+                        <a class="page-link" href="?page=${page.number + 1}&keyword=${param.keyword}">»</a>
+                    </li>
                 </c:if>
-            </c:forEach>
-
-            <c:if test="${page.hasNext()}">
-                <li class="page-item">
-                    <a class="page-link" href="?page=${page.number + 1}&keyword=${param.keyword}">»</a>
-                </li>
-            </c:if>
-        </ul>
-    </div>
-
+            </ul>
+        </div>
+    </c:if>
 </section>
+
+<!-- ✅ MỚI THÊM: Script toggle form -->
+<script>
+    function toggleDeleteForm() {
+        const form = document.getElementById("deleteForm");
+        form.classList.toggle("d-none");
+    }
+</script>
 
 </body>
 </html>

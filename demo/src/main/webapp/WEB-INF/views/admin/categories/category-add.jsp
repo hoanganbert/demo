@@ -46,10 +46,20 @@
 <!-- Form Section -->
 <section class="container mt-5">
     <h2 class="fw-bold mb-4">➕ Thêm danh mục</h2>
-    <form method="post" action="/admin/categories/save">
+
+    <!-- Hiển thị thông báo -->
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger">${error}</div>
+    </c:if>
+    <c:if test="${not empty success}">
+        <div class="alert alert-success">${success}</div>
+    </c:if>
+
+    <form id="categoryForm" method="post" action="/admin/categories/add">
         <div class="mb-3">
             <label class="form-label">Tên danh mục:</label>
-            <input type="text" name="name" class="form-control" required />
+            <input type="text" id="name" name="name" class="form-control" required />
+            <div class="invalid-feedback" id="nameFeedback"></div>
         </div>
         <div class="d-flex justify-content-between">
             <a href="/admin/categories" class="btn btn-secondary" id="backButton">← Quay lại</a>
@@ -87,6 +97,7 @@
                     feedback.textContent = "Tên danh mục đã tồn tại.";
                 } else {
                     nameInput.classList.remove("is-invalid");
+                    feedback.textContent = "";
                 }
             });
     });

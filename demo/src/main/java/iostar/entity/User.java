@@ -79,6 +79,27 @@ public class User implements UserDetails {
 	public void setLocked(boolean locked) {
 		this.locked = locked;
 	}
+	
+	public void setUsername(String username) {
+	    this.username = username;
+	}
+
+	public void setFullname(String fullname) {
+	    this.fullname = fullname;
+	}
+
+	public void setEmail(String email) {
+	    this.email = email;
+	}
+
+	public void setPhone(String phone) {
+	    this.phone = phone;
+	}
+
+	public void setRole(String role) {
+	    this.role = role;
+	}
+
 
 	@Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }

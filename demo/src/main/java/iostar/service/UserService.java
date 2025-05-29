@@ -20,5 +20,6 @@ public interface UserService {
     void delete(User user);
     void deleteAll();
     long count();
+
 }
 

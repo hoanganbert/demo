@@ -43,7 +43,7 @@
     <a href="/admin/customers" class="nav-item">👥 Quản lý khách hàng</a>
     <a href="/admin/promotions" class="nav-item">🎁 Quản lý khuyến mãi</a>
     <a href="/admin/reports" class="nav-item">📊 Thống kê & Báo cáo</a>
-    <a href="/admin/logout" class="nav-item logout ms-auto">🔓 Đăng xuất</a>
+    <a href="/logout" class="nav-item logout ms-auto">🔓 Đăng xuất</a>
 </div>
 
 <!-- Main Section -->
@@ -68,16 +68,14 @@
                 <tr>
                     <th>ID</th>
                     <th>Tên danh mục</th>
-                    <th>Mô tả</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
             <tbody>
-                <c:forEach var="category" items="${categories}">
+                <c:forEach var="category" items="${categories}" varStatus="loop">
                     <tr>
-                        <td>${category.id}</td>
+                    	<td>${loop.index + 1}</td> <!-- Thứ tự tăng đều -->
                         <td class="text-start">${category.name}</td>
-                        <td class="text-start">${category.description}</td>
                         <td>
                             <a href="/admin/categories/edit/${category.id}" class="btn btn-sm btn-primary">Sửa</a>
                             <a href="/admin/categories/delete/${category.id}" class="btn btn-sm btn-danger"
@@ -89,7 +87,8 @@
         </table>
     </div>
 
-    <!-- Pagination -->
+	  <!-- Pagination -->
+<c:if test="${page.totalPages > 0}">
     <div class="d-flex justify-content-between align-items-center mt-3">
         <!-- Go to Page Form -->
         <form method="GET" action="/admin/categories" class="d-flex">
@@ -124,6 +123,8 @@
             </c:if>
         </ul>
     </div>
+</c:if>
+
 </section>
 
 </body>

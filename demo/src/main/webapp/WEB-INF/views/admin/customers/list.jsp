@@ -43,7 +43,7 @@
     <a href="/admin/customers" class="nav-item">👥 Quản lý khách hàng</a>
     <a href="/admin/promotions" class="nav-item">🎁 Quản lý khuyến mãi</a>
     <a href="/admin/reports" class="nav-item">📊 Thống kê & Báo cáo</a>
-    <a href="/admin/logout" class="nav-item logout ms-auto">🔓 Đăng xuất</a>
+    <a href="/logout" class="nav-item logout ms-auto">🔓 Đăng xuất</a>
 </div>
 
 <!-- Main Section -->

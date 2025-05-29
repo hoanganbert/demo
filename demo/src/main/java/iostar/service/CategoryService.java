@@ -24,5 +24,8 @@ public interface CategoryService {
     Page<Category> searchByKeyword(String keyword, Pageable pageable);
     
     boolean existsByName(String name);
+    boolean existsByNameIgnoreCase(String name);
+    boolean existsByNameIgnoreCaseExceptId(String name, Integer id);
+
 
 }

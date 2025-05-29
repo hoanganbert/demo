@@ -43,7 +43,7 @@
     <a href="/admin/customers" class="nav-item">👥 Quản lý khách hàng</a>
     <a href="/admin/promotions" class="nav-item">🎁 Quản lý khuyến mãi</a>
     <a href="/admin/reports" class="nav-item">📊 Thống kê & Báo cáo</a>
-    <a href="/admin/logout" class="nav-item logout ms-auto">🔓 Đăng xuất</a>
+    <a href="/logout" class="nav-item logout ms-auto">🔓 Đăng xuất</a>
 </div>
 
 <!-- Main Section -->
@@ -109,13 +109,16 @@
     </div>
 
     <!-- Pagination -->
+<c:if test="${page.totalPages > 0}">
     <div class="d-flex justify-content-between align-items-center mt-3">
+        <!-- Go to Page Form -->
         <form method="GET" action="/admin/promotions" class="d-flex">
             <input type="number" name="page" min="1" max="${page.totalPages}" class="form-control me-2" placeholder="Nhập trang...">
             <input type="hidden" name="keyword" value="${param.keyword}" />
             <button type="submit" class="btn btn-primary">Đi đến</button>
         </form>
 
+        <!-- Page Numbers -->
         <ul class="pagination mb-0">
             <c:if test="${page.hasPrevious()}">
                 <li class="page-item">
@@ -141,6 +144,7 @@
             </c:if>
         </ul>
     </div>
+</c:if>
 </section>
 
 </body>

@@ -18,21 +18,12 @@ public class Product {
 
     @Column(nullable = false, length = 100)
     private String name;
-
-    @Column(nullable = false)
+    
+    @Column(nullable = false, columnDefinition = "float default 0")
     private float price;
 
     @Column(columnDefinition = "TEXT")
     private String description;
-
-    @Column(nullable = false)
-    private int stock_quantity;
-
-    @Column(nullable = false, length = 10)
-    private String size;
-
-    @Column(nullable = false, length = 50)
-    private String color;
 
     @Column(nullable = false, length = 255)
     private String image;
@@ -52,6 +43,22 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private List<PromotionDetail> promotionDetail;
+
+    // ⚠️ Không rely vào cascade để tránh lỗi product_id=null
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<ProductVariant> variants = new ArrayList<>();
+    
+    public int getTotalStockQuantity() {
+        return variants.stream().mapToInt(ProductVariant::getQuantity).sum();
+    }
+    
+	public List<ProductVariant> getVariants() {
+		return variants;
+	}
+
+	public void setVariants(List<ProductVariant> variants) {
+		this.variants = variants;
+	}
 
 	public int getId() {
 		return id;
@@ -85,30 +92,6 @@ public class Product {
 		this.description = description;
 	}
 
-	public int getStock_quantity() {
-		return stock_quantity;
-	}
-
-	public void setStock_quantity(int stock_quantity) {
-		this.stock_quantity = stock_quantity;
-	}
-
-	public String getSize() {
-		return size;
-	}
-
-	public void setSize(String size) {
-		this.size = size;
-	}
-
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
-	}
-
 	public String getImage() {
 		return image;
 	}
@@ -124,4 +107,9 @@ public class Product {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
+	
+    public void addVariant(ProductVariant variant) {
+        variant.setProduct(this); // 👈 Gán lại product cho variant
+        variants.add(variant);
+    }
 }

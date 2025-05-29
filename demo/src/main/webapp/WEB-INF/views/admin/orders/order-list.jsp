@@ -43,7 +43,7 @@
     <a href="/admin/customers" class="nav-item">👥 Quản lý khách hàng</a>
     <a href="/admin/promotions" class="nav-item">🎁 Quản lý khuyến mãi</a>
     <a href="/admin/reports" class="nav-item">📊 Thống kê & Báo cáo</a>
-    <a href="/admin/logout" class="nav-item logout ms-auto">🔓 Đăng xuất</a>
+    <a href="/logout" class="nav-item logout ms-auto">🔓 Đăng xuất</a>
 </div>
 
 <!-- Main Section -->
@@ -90,7 +90,8 @@
         </table>
     </div>
 
-    <!-- Pagination -->
+<!-- Pagination -->
+<c:if test="${page.totalPages > 0}">
     <div class="d-flex justify-content-between align-items-center mt-3">
         <!-- Go to Page Form -->
         <form method="GET" action="/admin/orders" class="d-flex">
@@ -125,6 +126,7 @@
             </c:if>
         </ul>
     </div>
+</c:if>
 </section>
 
 </body>

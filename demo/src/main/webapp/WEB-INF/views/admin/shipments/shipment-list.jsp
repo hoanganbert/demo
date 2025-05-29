@@ -43,7 +43,7 @@
     <a href="/admin/customers" class="nav-item">👥 Quản lý khách hàng</a>
     <a href="/admin/promotions" class="nav-item">🎁 Quản lý khuyến mãi</a>
     <a href="/admin/reports" class="nav-item">📊 Thống kê & Báo cáo</a>
-    <a href="/admin/logout" class="nav-item logout ms-auto">🔓 Đăng xuất</a>
+    <a href="/logout" class="nav-item logout ms-auto">🔓 Đăng xuất</a>
 </div>
 
 <!-- Main Section -->
@@ -112,41 +112,42 @@
     </div>
 
     <!-- Pagination -->
-    <c:if test="${pagination}">
-        <div class="d-flex justify-content-between align-items-center mt-3">
-            <!-- Go to Page -->
-            <form method="GET" action="/admin/shipments" class="d-flex">
-                <input type="number" name="page" min="1" max="${totalPages}" class="form-control me-2" placeholder="Nhập trang...">
-                <button type="submit" class="btn btn-primary">Đi đến</button>
-            </form>
+<c:if test="${page.totalPages > 0}">
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <!-- Go to Page Form -->
+        <form method="GET" action="/admin/shipments" class="d-flex">
+            <input type="number" name="page" min="1" max="${page.totalPages}" class="form-control me-2" placeholder="Nhập trang...">
+            <input type="hidden" name="keyword" value="${param.keyword}" />
+            <button type="submit" class="btn btn-primary">Đi đến</button>
+        </form>
 
-            <!-- Page Numbers -->
-            <ul class="pagination mb-0">
-                <c:if test="${currentPage > 0}">
-                    <li class="page-item">
-                        <a class="page-link" href="?page=${currentPage - 1}">«</a>
+        <!-- Page Numbers -->
+        <ul class="pagination mb-0">
+            <c:if test="${page.hasPrevious()}">
+                <li class="page-item">
+                    <a class="page-link" href="?page=${page.number - 1}&keyword=${param.keyword}">«</a>
+                </li>
+            </c:if>
+
+            <c:forEach var="i" begin="0" end="${page.totalPages - 1}">
+                <c:if test="${i < 3 || i == page.totalPages - 1 || (i >= page.number - 1 && i <= page.number + 1)}">
+                    <li class="page-item ${i == page.number ? 'active' : ''}">
+                        <a class="page-link" href="?page=${i}&keyword=${param.keyword}">${i + 1}</a>
                     </li>
                 </c:if>
-
-                <c:forEach var="i" begin="0" end="${totalPages - 1}">
-                    <c:if test="${i < 3 || i == totalPages - 1 || (i >= currentPage - 1 && i <= currentPage + 1)}">
-                        <li class="page-item ${i == currentPage ? 'active' : ''}">
-                            <a class="page-link" href="?page=${i}">${i + 1}</a>
-                        </li>
-                    </c:if>
-                    <c:if test="${i == 3 && currentPage > 4}">
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                    </c:if>
-                </c:forEach>
-
-                <c:if test="${currentPage < totalPages - 1}">
-                    <li class="page-item">
-                        <a class="page-link" href="?page=${currentPage + 1}">»</a>
-                    </li>
+                <c:if test="${i == 3 && page.number > 4}">
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
                 </c:if>
-            </ul>
-        </div>
-    </c:if>
+            </c:forEach>
+
+            <c:if test="${page.hasNext()}">
+                <li class="page-item">
+                    <a class="page-link" href="?page=${page.number + 1}&keyword=${param.keyword}">»</a>
+                </li>
+            </c:if>
+        </ul>
+    </div>
+</c:if>
 </section>
 
 </body>

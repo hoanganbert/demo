@@ -18,8 +18,15 @@ public interface ProductService {
     void deleteAll();
     long count();
     
+    List<Product> findByCategoryId(Integer categoryId);
+    
     Page<Product> findByKeyword(String keyword, Pageable pageable);
     Page<Product> findByCategoryId(Integer categoryId, Pageable pageable);
     Page<Product> findByCategoryIdAndKeyword(Integer categoryId, String keyword, Pageable pageable);
+    
+    Page<Product> findAllWithVariants(Pageable pageable);
+    Page<Product> findByKeywordWithVariants(String keyword, Pageable pageable);
+    Page<Product> findByCategoryIdWithVariants(Integer categoryId, Pageable pageable);
+    Page<Product> findByCategoryIdAndKeywordWithVariants(Integer categoryId, String keyword, Pageable pageable);
 
 }
